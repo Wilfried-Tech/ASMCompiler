@@ -1,0 +1,44 @@
+
+pre code[lang=asm]{
+  background: red;
+}
+
+pre {
+  overflow-x: scroll;
+  margin: 5px;
+  background-color: #444;
+  color: white;
+  padding: 10px 0;
+}
+
+code[lang=asm] table{
+  border-collapse: collapse;
+}
+
+.code-asm-struct td{
+  padding: 3px;
+  letter-spacing: 2px;
+}
+
+code[lang=asm] .code-asm-struct .code-asm-address{
+  padding-right: 7px;
+  text-align: right;
+}
+
+code[lang=asm] .code-asm-struct .code-asm-code{
+  padding-right: 10px;
+  text-align: justify;
+}
+
+code[lang=asm] .code-asm-struct .code-asm-comment {
+  padding-right: 5px;
+  text-align: justify;
+}
+
+
+/* Theme */
+
+code[lang=asm][data-theme=default] .asm-address,code[lang=asm] .asm-address{
+  color: limegreen;
+  font-style: italic;
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My JS Modules API</title>
+  <script src="../../libs/eruda.min.js"></script>
+  <script>
+    eruda.init();
+    eruda.get().config.set('displaySize', 60);
+    eruda.remove('info');
+    eruda.remove('sources');
+    eruda.remove('snippets');
+    eruda.remove('settings');
+  </script>
+  <link rel="icon" type="icon" href="assets/images/favicon/favicon.png">
+  <link rel="stylesheet" href="style.css" type="text/css" media="all" />
+<script defer src="../../../../sandBox/Js/WebAsm.js"></script><script defer src="dist/WebAsm.js"></script></head>
+
+<body>
+  <pre><code lang="asm" id="code">
+    MVI r3,#0 ; nombre de remplacements égal à 0
+    ici: LDB r4,(r0) ; charger prochain caractère
+    JZ r4,fin ; fin de la chaîne ?
+    SUB r4,r4,r1 ; comparer r4 et r1
+    JNZ r4,next ; sauter remplacement si différent
+    STB (r0),r2 ; si égal, remplacer par r2
+    ADD r3,r3,#1 ; nombre de remplacements + 1
+    next: ADD r0,r0,#1 ; avancer pointeur sur suivant
+    JMP ici ; retour dans la boucle
+    fin:
+  </code></pre>
+<script src="main.js"></script>
+</html>
