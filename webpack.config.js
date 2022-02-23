@@ -5,19 +5,18 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const config = {
   mode: 'development',
   entry: {
-    '../../../../../sandBox/Js/WebAsm': './index.js',
-    'WebAsm': './index.js'
+    webasm: './index.js'
     },
   devtool: 'inline-source-map',
   plugins: [
      new HtmlWebpackPlugin({
       title: 'Development',
       filename: 'index.html',
-      template: '../../../../sandBox/Js/temp/index.html'
+      template: 'template/index.html'
     }),
    ],
   output: {
-    path: path.resolve(__dirname, './dist'),
+    path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
     clean: true
   },
