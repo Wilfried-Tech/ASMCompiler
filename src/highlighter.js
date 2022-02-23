@@ -53,7 +53,7 @@ function checkLine(line) {
    comment: String
  }}
  */
-function toHighLightCodeObject(line) {
+function toLineCodeObject(line) {
   var obj = {}
   line = line.trim();
   obj.address = line.substring(0, line.indexOf(':') + 1);
@@ -63,7 +63,7 @@ function toHighLightCodeObject(line) {
   obj.code = line.trim();
   var sortedObj = {};
   Object.keys(obj).sort().forEach(prop => sortedObj[prop] = obj[prop])
-  return highLight(sortedObj)
+  return highlighting(sortedObj)
 }
 
 /**
@@ -79,11 +79,33 @@ function toHighLightCodeObject(line) {
    comment: String
  }}
  */
-function highlight(obj) {
+function highlighting(obj) {
+  
+  obj.address = wrapper({
+    name: 'address',
+    keyword: obj.address
+  })
+  obj.comment = wrapper({
+    name: 'comment',
+    keyword: obj.comment
+  })
   
   return obj
 }
 
+/**
+ * cree an Asm code part wrapper
+ * @param {Object} param
+ * @param {String} param.keyword
+ * @param {String} param.name
+ * @returns {String}
+ */
+ function wrapper(param) {
+   var span = document.createElement('span');
+   span.className = `asm-${param.name}`;
+   span.textContent = param.keyword;
+   return span.outerHTML;
+ }
 class HighLighter {
   /**
    * highlight the asm code 
@@ -99,7 +121,7 @@ class HighLighter {
     if (typeof param != 'object' || typeof param.src != 'string')
       return null;
     var codeLines = param.src.trim().split('\n');
-    var highlightedObjectArr = codeLines.map(toHighLightCodeObject);
+    var highlightedObjectArr = codeLines.map(toLineCodeObject);
     var output = '';
     highlightedObjectArr.forEach(line => {
       var tr = document.createElement('tr');
@@ -115,4 +137,4 @@ class HighLighter {
   }
 }
 
-export default { HighLighter };
+export default HighLighter;

@@ -1,6 +1,6 @@
 
 pre code[lang=asm]{
-  background: red;
+  display: block;
 }
 
 pre {
@@ -40,5 +40,10 @@ code[lang=asm] .code-asm-struct .code-asm-comment {
 
 code[lang=asm][data-theme=default] .asm-address,code[lang=asm] .asm-address{
   color: limegreen;
+  font-style: italic;
+}
+
+code[lang=asm][data-theme=default] .asm-comment,code[lang=asm] .asm-comment{
+  color: darkgrey;
   font-style: italic;
 }
