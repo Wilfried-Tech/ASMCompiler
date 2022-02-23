@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const config = {
   mode: 'development',
   entry: {
-    webasm: './index.js'
+    webasm: './src/index.js'
     },
   devtool: 'inline-source-map',
   plugins: [

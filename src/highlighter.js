@@ -1,5 +1,4 @@
-import ('./assets/styles/highlight.css')
-
+import '../assets/styles/highlight.css'
 
 
 const keywords = []
@@ -98,4 +97,4 @@ class HighLighter {
   }
 }
 
-export { HighLighter };
+export default { HighLighter };
