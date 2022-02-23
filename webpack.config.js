@@ -6,7 +6,7 @@ const config = {
   mode: 'development',
   entry: {
     webasm: './src/index.js'
-    },
+  },
   devtool: 'inline-source-map',
   plugins: [
      new HtmlWebpackPlugin({
@@ -40,6 +40,11 @@ const config = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
+        },
+      {
+        test: /\.js$/,
+        use: ['babel-loader'],
+        exclude: /node_modules|cdn_modules/
         }
       ]
   }

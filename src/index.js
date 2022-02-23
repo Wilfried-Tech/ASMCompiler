@@ -1,6 +1,7 @@
-import HighLighter from 'HighLighter.js'
+import HighLighter from './HighLighter.js'
+import Parser from './Parser.js'
 
-const WebASM = { HighLighter };
+
+const WebASM = { HighLighter, Parser };
 
 window.WebASM = WebASM;
-
