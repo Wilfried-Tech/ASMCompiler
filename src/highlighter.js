@@ -63,7 +63,25 @@ function toHighLightCodeObject(line) {
   obj.code = line.trim();
   var sortedObj = {};
   Object.keys(obj).sort().forEach(prop => sortedObj[prop] = obj[prop])
-  return sortedObj
+  return highLight(sortedObj)
+}
+
+/**
+ * highlight one line of code in Object
+ * representation 
+ * @param {Object} obj
+ * @param {String} obj.address
+ * @param {String} obj.code
+ * @param {String} obj.comment
+ * @returns {{
+   address: String,
+   code: String,
+   comment: String
+ }}
+ */
+function highlight(obj) {
+  
+  return obj
 }
 
 class HighLighter {
