@@ -1,7 +1,7 @@
 import '../assets/styles/highlight.css'
 
 
-const keywords = []
+var AsmCodes = { labels: [], operands: [] };
 
 /**
  * define the object structure of error
@@ -33,7 +33,6 @@ function checkLine(line) {
           match = true;
           //alert(operand + ' match ' + pattern)
         }
-        //alert(operand)
       }
       if (!match) return false;
       match = false;
@@ -56,12 +55,14 @@ function checkLine(line) {
 function toLineCodeObject(line) {
   var obj = {}
   line = line.trim();
-  obj.address = line.substring(0, line.indexOf(':') + 1);
-  line = line.replace(obj.address, '');
+  obj.label = line.substring(0, line.indexOf(':') + 1);
+  line = line.replace(obj.label, '');
   obj.comment = line.substring(line.indexOf(';'));
   line = line.replace(obj.comment, '');
-  obj.code = line.trim();
+  obj.instruction = line.trim();
   var sortedObj = {};
+  if (obj.label != '')
+    AsmCodes.labels.push(obj.label.substring(0, obj.label.length - 1))
   Object.keys(obj).sort().forEach(prop => sortedObj[prop] = obj[prop])
   return highlighting(sortedObj)
 }
@@ -70,17 +71,16 @@ function toLineCodeObject(line) {
  * highlight one line of code in Object
  * representation 
  * @param {Object} obj
- * @param {String} obj.address
- * @param {String} obj.code
+ * @param {String} obj.label
+ * @param {String} obj.instruction
  * @param {String} obj.comment
  * @returns {{
-   address: String,
-   code: String,
+   label: String,
+   instruction: String,
    comment: String
  }}
  */
 function highlighting(obj) {
-  
   obj.address = wrapper({
     name: 'address',
     keyword: obj.address
@@ -89,7 +89,9 @@ function highlighting(obj) {
     name: 'comment',
     keyword: obj.comment
   })
-  
+
+  var
+
   return obj
 }
 
@@ -100,12 +102,12 @@ function highlighting(obj) {
  * @param {String} param.name
  * @returns {String}
  */
- function wrapper(param) {
-   var span = document.createElement('span');
-   span.className = `asm-${param.name}`;
-   span.textContent = param.keyword;
-   return span.outerHTML;
- }
+function wrapper(param) {
+  var span = document.createElement('span');
+  span.className = `asm-${param.name}`;
+  span.textContent = param.keyword;
+  return span.outerHTML;
+}
 class HighLighter {
   /**
    * highlight the asm code 
@@ -120,9 +122,12 @@ class HighLighter {
   static highlight(param) {
     if (typeof param != 'object' || typeof param.src != 'string')
       return null;
+    AsmCodes = { labels: [], operands: [] };
+
     var codeLines = param.src.trim().split('\n');
     var highlightedObjectArr = codeLines.map(toLineCodeObject);
     var output = '';
+    console.log(AsmCodes);
     highlightedObjectArr.forEach(line => {
       var tr = document.createElement('tr');
       for (var part in line) {

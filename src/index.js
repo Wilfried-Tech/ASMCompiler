@@ -1,4 +1,4 @@
-import HighLighter from './highlighter.js'
+import HighLighter from 'HighLighter.js'
 
 const WebASM = { HighLighter };
 
