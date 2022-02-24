@@ -67,7 +67,7 @@ code[lang=asm] .asm-register {
 
 code[lang=asm][data-theme=default] .asm-unknown,
 code[lang=asm] .asm-unknown {
-  color: gray;
+  color: darkolivegreen;
 }
 
 code[lang=asm][data-theme=default] .asm-direct-value,

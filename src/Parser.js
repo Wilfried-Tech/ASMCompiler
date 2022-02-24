@@ -53,7 +53,10 @@ class Parser {
    * parse instruction string instruction into an object
    * @param {String} strInstruct
    * @returns {{
-      label: String,
+      label: {
+        value: String,
+        type: String
+      },
       instruct: {
         optCode: String,
         operands: Array<{
@@ -71,7 +74,7 @@ class Parser {
     strInstruct = strInstruct.trim();
     parsed.label = strInstruct.substring(0, strInstruct.indexOf(':') + 1);
     strInstruct = strInstruct.replace(parsed.label, '');
-    parsed.comment = strInstruct.substring(strInstruct.indexOf(';'));
+    parsed.comment = (strInstruct.indexOf(';') != -1) ? strInstruct.substring(strInstruct.indexOf(';')) : '';
     strInstruct = strInstruct.replace(parsed.comment, '');
     parsed.instruct = {};
     var instruction = strInstruct.trim();
@@ -79,6 +82,10 @@ class Parser {
     instruction = instruction.replace(parsed.instruct.optCode, '').trim();
     var operands = instruction.split(',');
     //delete instruct, strInstruct;
+    parsed.label = {
+      value: parsed.label,
+      type: 'label'
+    }
     parsed.instruct.operands = operands.map(op => {
       return {
         type: '',
@@ -92,7 +99,10 @@ class Parser {
    * parse a whole code string instruction into an array of object
    * @param {String} code
    * @returns {Array<{
-      label: String,
+      label: {
+        value: String,
+        type: String
+      },
       instruct: {
         optCode: String,
         operands: Array<{
@@ -108,10 +118,17 @@ class Parser {
     var parsedObjects = code.trim().split('\n').map((line) => {
       return _.parseLine(line);
     })
-    var labels = parsedObjects.map(obj => obj.label.replace(':', '')).filter(label => label)
+    var labels = parsedObjects.map(obj => obj.label.value.replace(':', '')).filter(label => label);
+    var variables = parsedObjects.map(obj => {
+      if ((["DB", "DW", "DD", "DF", "DP", "DQ", "DT"]).indexOf(obj.instruct.optCode.trim()) != -1) {
+        obj.label.type = 'variable'
+        return obj.label.value.replace(':', '');
+      }
+    });
+    variables = variables.filter(variable => variable);
     parsedObjects.forEach(obj => {
       obj.instruct.operands.forEach(operand => {
-        if (['LDB', 'LDS', 'LDSW', 'LDH', 'LDW'].indexOf(obj.instruct.optCode) != -1) {
+        if (variables.indexOf(operand.value) != -1) {
           operand.type = 'variable';
         } else if (labels.indexOf(operand.value) != -1) {
           operand.type = 'label';
@@ -119,12 +136,12 @@ class Parser {
           operand.type = 'register';
         } else if (operand.value.startsWith('#')) {
           operand.type = 'direct-value'
-        } else{
+        } else {
           operand.type = 'unknown'
         }
       })
     })
-    console.log(parsedObjects);
+    console.log(variables);
     return parsedObjects;
   }
 

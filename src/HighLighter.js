@@ -27,7 +27,9 @@ function wrapper(param) {
  * highlight parsed instruction into a string
  * representation 
  * @param {Object} parsed
- * @param {String} parsed.label
+ * @param {Object} parsed.label
+ * @param {String} parsed.label.value
+ * @param {String} parsed.label.type
  * @param {Object} parsed.instruct
  * @param {String} parsed.instruct.optCode
  * @param {Array<String>} parsed.instruct.operands
@@ -42,8 +44,8 @@ function wrapper(param) {
  */
 function highlighting(parsed) {
   parsed.label = wrapper({
-    name: 'label',
-    keyword: parsed.label
+    name: parsed.label.type,
+    keyword: parsed.label.value
   })
   parsed.comment = wrapper({
     name: 'comment',

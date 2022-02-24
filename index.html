@@ -21,6 +21,7 @@
 
 <body>
   <pre><code lang="asm" id="code">
+    r4:DB #5
     MVI r3,#0 ; nombre de remplacements égal à 0
     ici: LDB r4,(r0) ; charger prochain caractère
     JZ r4,fin ; fin de la chaîne ?
