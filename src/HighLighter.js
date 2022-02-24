@@ -1,5 +1,5 @@
 import '../assets/styles/highlight.css'
-import './Parser.js'
+import Parser from './Parser.js'
 
 /**
  * define the object structure of error
@@ -22,6 +22,51 @@ function wrapper(param) {
   return span.outerHTML;
 }
 
+
+/**
+ * highlight parsed instruction into a string
+ * representation 
+ * @param {Object} parsed
+ * @param {String} parsed.label
+ * @param {Object} parsed.instruct
+ * @param {String} parsed.instruct.optCode
+ * @param {Array<String>} parsed.instruct.operands
+ * @param {String} parsed.instruct.operands.type
+ * @param {String} parsed.instruct.operands.value
+ * @param {String} parsed.comment
+ * @returns {{
+   label: String,
+   instruction: String,
+   comment: String
+ }}
+ */
+function highlighting(parsed) {
+  parsed.label = wrapper({
+    name: 'label',
+    keyword: parsed.label
+  })
+  parsed.comment = wrapper({
+    name: 'comment',
+    keyword: parsed.comment
+  })
+
+  var instruct = parsed.instruct;
+  parsed.instruct = wrapper({
+    name: 'opt-code',
+    keyword: instruct.optCode
+  });
+
+  instruct.operands.forEach((operand, i) => {
+    parsed.instruct += ((i == 0) ? '' : ',');
+    parsed.instruct += wrapper({
+      name: operand.type,
+      keyword: operand.value
+    })
+  })
+  return parsed
+}
+
+
 class HighLighter {
   /**
    * highlight the asm code 
@@ -36,22 +81,21 @@ class HighLighter {
   static highlight(param) {
     if (typeof param != 'object' || typeof param.src != 'string')
       return null;
-    /*AsmCodes = { labels: [], operands: [] };
+    var parser = new Parser();
 
-    var codeLines = param.src.trim().split('\n');
-    var highlightedObjectArr = codeLines.map(toLineCodeObject);
+    var parsedObjectArr = parser.parse(param.src);
     var output = '';
-    console.log(AsmCodes);
-    highlightedObjectArr.forEach(line => {
+    parsedObjectArr.forEach(obj => {
+      obj = highlighting(obj);
       var tr = document.createElement('tr');
-      for (var part in line) {
+      for (var part of ['label', 'instruct', 'comment']) {
         var td = document.createElement('td');
-        td.innerHTML = line[part];
+        td.innerHTML = obj[part];
         td.className = 'code-asm-' + part;
         tr.appendChild(td);
       }
       output += tr.outerHTML;
-    })*/
+    })
     return `<table class='code-asm-struct'>${output}</table>`
   }
 }

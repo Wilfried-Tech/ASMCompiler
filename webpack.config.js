@@ -41,11 +41,22 @@ const config = {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
         },
+      /*
+            {
+              test: /\.js$/,
+              use: 'babel-loader',
+              exclude: /node_modules/
+              }
       {
         test: /\.js$/,
-        use: ['babel-loader'],
-        exclude: /node_modules|cdn_modules/
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env',{targets:"defaults"}]
+          }
         }
+        }*/
       ]
   }
 };

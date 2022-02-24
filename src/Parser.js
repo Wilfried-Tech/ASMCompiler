@@ -1,105 +1,139 @@
+import { Keywords, Registers } from './Constants.js'
+
+
 /**
  * Parser for ASM codes
  * @class
  */
 class Parser {
-  Y='lok'
   /**
    * Check if instruction is well written
    * 
-   * @param {String} line represents the instruction
+   * @param {String} strInstruct represents the string instruction
    * @returns {Boolean}
    */
-   checkInstructionLine(line){
-     
-   }
-}
+  checkInstructionSyntax(strInstruct) {
+    strInstruct = strInstruct.trim();
+    var label;
+    var instructRegexp = /^(\w+ *: *)?([A-Z0-9]+ [a-zA-Z0-9#\(\)\"\'\`]+(\,[a-zA-Z0-9#\(\)\"\'\`]+)*)?(\ *\;.*)?$/;
+    if (instructRegexp.test(strInstruct)) {
+      label = strInstruct.substring(0, strInstruct.indexOf(':') + 1);
+      strInstruct = strInstruct.split(/(\;|\:)/g);
+      strInstruct = strInstruct.find((v) => {
+        return /([A-Z0-9]+ [a-zA-Z0-9#\(\)\"\'\`]+(\,[a-zA-Z0-9#\(\)\"\'\`]+)*)/.test(v.trim());
+      });
+      if (!strInstruct) {
+        return true
+      } else {
+        strInstruct = strInstruct.trim();
+      }
+      strInstruct = strInstruct.substring(strInstruct.indexOf(' ')).trim();
+      var operands = strInstruct.split(',');
 
-/**
- * Check the syntax and syntax error of asm code
- * @param {String} line
- * @returns {Boolean}
- */
-function checkLine(line) {
-  line = line.trim();
-  var lineRegexp = /^(\w+ *: *)?[A-Z]+ [a-zA-Z0-9#\(\)\"\'\`]+(\,[a-zA-Z0-9#\(\)\"\'\`]+)+(\ *\;.*)?$/;
-  if (lineRegexp.test(line)) {
-    line = line.split(/\;|\:/g);
-    line = line.find((v) => {
-      return /[A-Z]+ [a-zA-Z0-9#\(\)\"\'\`]+(\,[a-zA-Z0-9#\(\)\"\'\`]+)+/.test(v.trim());
-    }).trim();
-    line = line.substring(line.indexOf(' ')).trim();
-    line = line.split(',');
-    // test if operand are proper
-    for (let i = 0, match = false, operand = ''; i < line.length; i++) {
-      operand = line[i];
-      for (let pattern of [/^\w+$/, /^\#\d+$/, /^\#(["'`])\w+\1$/, /^\(\w+\)$/]) {
-        if (pattern.test(operand)) {
-          match = true;
-          //alert(operand + ' match ' + pattern)
+      // test if operand are proper 
+      for (let i = 0, match = false, operand = ''; i < operands.length; i++) {
+        operand = operands[i];
+        for (let pattern of [/^\w+$/, /^\#\d+$/, /^\#(["'`])\w+\1$/, /^\(\w+\)$/]) {
+          if (pattern.test(operand)) {
+            match = true;
+          }
+        }
+        if (!match) return false;
+        match = false;
+        if (Keywords.indexOf(operand.toUpperCase()) != -1 || Keywords.indexOf(label.toUpperCase()) != -1 || Registers.indexOf(label.toUpperCase()) != -1) {
+          return false;
         }
       }
-      if (!match) return false;
-      match = false;
+      return true
     }
-    return true;
+    return false;
   }
-  return false;
-}
 
-/**
- * highlight one line of code and return the object 
- * representation 
- * @param {String} line
- * @returns {{
-   address: String,
-   code: String,
-   comment: String
- }}
+  /**
+   * parse instruction string instruction into an object
+   * @param {String} strInstruct
+   * @returns {{
+      label: String,
+      instruct: {
+        optCode: String,
+        operands: Array<{
+          type: String,
+          value: String
+        }>
+      },
+      comment: String
+   }}
  */
-function toLineCodeObject(line) {
-  var obj = {}
-  line = line.trim();
-  obj.label = line.substring(0, line.indexOf(':') + 1);
-  line = line.replace(obj.label, '');
-  obj.comment = line.substring(line.indexOf(';'));
-  line = line.replace(obj.comment, '');
-  obj.instruction = line.trim();
-  var sortedObj = {};
-  if (obj.label != '')
-    AsmCodes.labels.push(obj.label.substring(0, obj.label.length - 1))
-  Object.keys(obj).sort().forEach(prop => sortedObj[prop] = obj[prop])
-  return highlighting(sortedObj)
-}
+  parseLine(strInstruct) {
+    if (!this.checkInstructionSyntax(strInstruct))
+      return null;
+    var parsed = {}
+    strInstruct = strInstruct.trim();
+    parsed.label = strInstruct.substring(0, strInstruct.indexOf(':') + 1);
+    strInstruct = strInstruct.replace(parsed.label, '');
+    parsed.comment = strInstruct.substring(strInstruct.indexOf(';'));
+    strInstruct = strInstruct.replace(parsed.comment, '');
+    parsed.instruct = {};
+    var instruction = strInstruct.trim();
+    parsed.instruct.optCode = instruction.substring(0, instruction.indexOf(' ') + 1);
+    instruction = instruction.replace(parsed.instruct.optCode, '').trim();
+    var operands = instruction.split(',');
+    //delete instruct, strInstruct;
+    parsed.instruct.operands = operands.map(op => {
+      return {
+        type: '',
+        value: op.trim()
+      }
+    });
+    return parsed;
+  }
 
-/**
- * highlight one line of code in Object
- * representation 
- * @param {Object} obj
- * @param {String} obj.label
- * @param {String} obj.instruction
- * @param {String} obj.comment
- * @returns {{
-   label: String,
-   instruction: String,
-   comment: String
- }}
+  /**
+   * parse a whole code string instruction into an array of object
+   * @param {String} code
+   * @returns {Array<{
+      label: String,
+      instruct: {
+        optCode: String,
+        operands: Array<{
+          type: String,
+          value: String
+        }>
+      },
+      comment: String
+    }>}
  */
- 
-function highlighting(obj) {
-  obj.address = wrapper({
-    name: 'address',
-    keyword: obj.address
-  })
-  obj.comment = wrapper({
-    name: 'comment',
-    keyword: obj.comment
-  })
+  parse(code) {
+    var _ = this;
+    var parsedObjects = code.trim().split('\n').map((line) => {
+      return _.parseLine(line);
+    })
+    var labels = parsedObjects.map(obj => obj.label.replace(':', '')).filter(label => label)
+    parsedObjects.forEach(obj => {
+      obj.instruct.operands.forEach(operand => {
+        if (['LDB', 'LDS', 'LDSW', 'LDH', 'LDW'].indexOf(obj.instruct.optCode) != -1) {
+          operand.type = 'variable';
+        } else if (labels.indexOf(operand.value) != -1) {
+          operand.type = 'label';
+        } else if (Registers.indexOf(operand.value.toUpperCase()) != -1) {
+          operand.type = 'register';
+        } else if (operand.value.startsWith('#')) {
+          operand.type = 'direct-value'
+        } else{
+          operand.type = 'unknown'
+        }
+      })
+    })
+    console.log(parsedObjects);
+    return parsedObjects;
+  }
 
-  return obj
+  /**
+   * @constructor
+   */
+  constructor() {}
+
 }
-
-
 
 
 export default Parser

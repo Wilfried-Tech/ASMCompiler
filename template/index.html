@@ -28,7 +28,7 @@
     JNZ r4,next ; sauter remplacement si différent
     STB (r0),r2 ; si égal, remplacer par r2
     ADD r3,r3,#1 ; nombre de remplacements + 1
-    next: ADD r0,r0,#1 ; avancer pointeur sur suivant
+    next: ADD r0,Ax,#1 ; avancer pointeur sur suivant
     JMP ici ; retour dans la boucle
     fin:
   </code></pre>
