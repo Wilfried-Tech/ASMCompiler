@@ -1,5 +1,4 @@
-
-pre code[lang=asm]{
+pre code[lang=asm] {
   display: block;
 }
 
@@ -11,21 +10,21 @@ pre {
   padding: 10px 0;
 }
 
-code[lang=asm] table{
+code[lang=asm] table {
   border-collapse: collapse;
 }
 
-.code-asm-struct td{
+.code-asm-struct td {
   padding: 3px;
   letter-spacing: 2px;
 }
 
-code[lang=asm] .code-asm-struct .code-asm-label{
+code[lang=asm] .code-asm-struct .code-asm-label {
   padding-right: 7px;
   text-align: right;
 }
 
-code[lang=asm] .code-asm-struct .code-asm-code{
+code[lang=asm] .code-asm-struct .code-asm-code {
   padding-right: 10px;
   text-align: justify;
 }
@@ -38,33 +37,40 @@ code[lang=asm] .code-asm-struct .code-asm-comment {
 
 /* Theme */
 
-code[lang=asm][data-theme=default] .asm-label,code[lang=asm] .asm-label{
+code[lang=asm][data-theme=default] .asm-label,
+code[lang=asm] .asm-label {
   color: limegreen;
   font-style: italic;
 }
 
-code[lang=asm][data-theme=default] .asm-comment,code[lang=asm] .asm-comment{
+code[lang=asm][data-theme=default] .asm-comment,
+code[lang=asm] .asm-comment {
   color: darkgrey;
   font-style: italic;
 }
 
-code[lang=asm][data-theme=default] .asm-opt-code,code[lang=asm] .asm-opt-code{
+code[lang=asm][data-theme=default] .asm-opt-code,
+code[lang=asm] .asm-opt-code {
   color: white;
   font-weight: bold;
 }
 
-code[lang=asm][data-theme=default] .asm-variable,code[lang=asm] .asm-variable{
+code[lang=asm][data-theme=default] .asm-variable,
+code[lang=asm] .asm-variable {
   color: blue;
 }
 
-code[lang=asm][data-theme=default] .asm-register,code[lang=asm] .asm-register{
+code[lang=asm][data-theme=default] .asm-register,
+code[lang=asm] .asm-register {
   color: gold;
 }
 
-code[lang=asm][data-theme=default] .asm-unknown,code[lang=asm] .asm-unknown{
+code[lang=asm][data-theme=default] .asm-unknown,
+code[lang=asm] .asm-unknown {
   color: gray;
 }
 
-code[lang=asm][data-theme=default] .asm-direct-value,code[lang=asm] .asm-direct-value{
+code[lang=asm][data-theme=default] .asm-direct-value,
+code[lang=asm] .asm-direct-value {
   color: blueviolet;
 }
